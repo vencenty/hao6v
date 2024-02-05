@@ -36,7 +36,7 @@ func (p *Processor) LinkCallback(e *colly.HTMLElement) {
 		page := &model.Page{
 			AbsoluteUrl: e.Request.AbsoluteURL(e.Request.URL.String()),
 		}
-		pageDao := dao.NewPageDao()
+		pageDao := dao.NewUrlDao()
 		_, _, err := pageDao.FirstOrCreate(page)
 		if err != nil {
 			fmt.Println(err)
