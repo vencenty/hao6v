@@ -5,6 +5,7 @@ import (
 	"github.com/gocolly/colly/v2"
 	"hao6v/internal/dao"
 	"hao6v/internal/model"
+	"hao6v/pkg/utils"
 	"regexp"
 	"sync"
 )
@@ -30,7 +31,7 @@ func GetProcessorInstance() *Processor {
 	return instance
 }
 
-func (p *Processor) HTMLCallback(e *colly.HTMLElement) {
+func (p *Processor) LinkCallback(e *colly.HTMLElement) {
 	if urlPattern.MatchString(e.Request.AbsoluteURL(e.Request.URL.String())) {
 		page := &model.Page{
 			AbsoluteUrl: e.Request.AbsoluteURL(e.Request.URL.String()),
@@ -47,6 +48,11 @@ func (p *Processor) HTMLCallback(e *colly.HTMLElement) {
 	e.Request.Visit(link)
 }
 
+func (p *Processor) BodyCallback(e *colly.HTMLElement) {
+	r := e.DOM.Text()
+	fmt.Println(utils.ConvertGBKToUTF8(r))
+}
+
 func (p *Processor) ParseHTML(e *colly.HTMLElement) {
 	// 如果不匹配的网站，那么不解析
 	if !urlPattern.MatchString(e.Request.AbsoluteURL(e.Request.URL.String())) {
@@ -58,4 +64,11 @@ func (p *Processor) ParseHTML(e *colly.HTMLElement) {
 
 func (p *Processor) RequestCallback(r *colly.Request) {
 	fmt.Println("Visiting", r.AbsoluteURL(r.URL.String()))
+}
+func (p *Processor) ResponseCallback(r *colly.Response) {
+	// 1. 编码转换
+	_, err := utils.ConvertEncoding(r.Body)
+	if err != nil {
+		panic(err)
+	}
 }
