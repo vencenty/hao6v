@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func ConvertGBKToUTF8(s string) (string, error) {
@@ -32,4 +33,14 @@ func DownloadDemoHTML(url string) {
 func ConvertEncoding(originalData []byte) ([]byte, error) {
 	reader := transform.NewReader(bytes.NewReader(originalData), simplifiedchinese.GBK.NewDecoder())
 	return io.ReadAll(reader)
+}
+
+func IdentifyLinkType(url string) string {
+	if strings.HasPrefix(url, "ed2k") {
+		return "ed2k"
+	} else if strings.HasPrefix(url, "magnet") {
+		return "magnet"
+	} else {
+		return "other"
+	}
 }

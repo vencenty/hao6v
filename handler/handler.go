@@ -36,7 +36,7 @@ func (p *Processor) LinkCallback(e *colly.HTMLElement) {
 		page := &model.Page{
 			AbsoluteUrl: e.Request.AbsoluteURL(e.Request.URL.String()),
 		}
-		pageDao := dao.NewUrlDao()
+		pageDao := dao.NewPageDao()
 		_, _, err := pageDao.FirstOrCreate(page)
 		if err != nil {
 			fmt.Println(err)
@@ -66,8 +66,9 @@ func (p *Processor) RequestCallback(r *colly.Request) {
 	fmt.Println("Visiting", r.AbsoluteURL(r.URL.String()))
 }
 func (p *Processor) ResponseCallback(r *colly.Response) {
+	var err error
 	// 1. 编码转换
-	_, err := utils.ConvertEncoding(r.Body)
+	r.Body, err = utils.ConvertEncoding(r.Body)
 	if err != nil {
 		panic(err)
 	}
