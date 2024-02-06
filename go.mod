@@ -1,12 +1,14 @@
 module hao6v
 
-go 1.21.6
+go 1.21
 
 require (
+	github.com/chromedp/chromedp v0.9.5
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gocolly/colly/v2 v2.1.0
-	gorm.io/driver/mysql v1.5.2
-	gorm.io/gorm v1.25.6
+	golang.org/x/text v0.14.0
+	gorm.io/driver/mysql v1.5.3
+	gorm.io/gorm v1.25.7-0.20240204074919-46816ad31dde
 )
 
 require (
@@ -17,7 +19,6 @@ require (
 	github.com/antchfx/xpath v1.1.8 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/chromedp/cdproto v0.0.0-20240202021202-6d0b6a386732 // indirect
-	github.com/chromedp/chromedp v0.9.5 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
@@ -36,7 +37,6 @@ require (
 	github.com/temoto/robotstxt v1.1.1 // indirect
 	golang.org/x/net v0.0.0-20210428140749-89ef3d95e781 // indirect
 	golang.org/x/sys v0.16.0 // indirect
-	golang.org/x/text v0.3.6 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/protobuf v1.24.0 // indirect
 )
