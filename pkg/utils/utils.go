@@ -20,13 +20,13 @@ func ConvertGBKToUTF8(s string) (string, error) {
 	return string(d), nil
 }
 
-func DownloadDemoHTML(url string) {
+func DownloadDemoHTML(url string, saveAsFileName string) {
 	r, _ := http.Get(url)
 	defer r.Body.Close()
 	all, _ := io.ReadAll(r.Body)
 	s, _ := ConvertGBKToUTF8(string(all))
 
-	f, _ := os.Create("./demo.html")
+	f, _ := os.Create("./demo/" + saveAsFileName)
 	f.Write([]byte(s))
 }
 

@@ -6,13 +6,15 @@ import (
 )
 
 type Page struct {
-	ID          uint      `gorm:"column:id;primary_key;AUTO_INCREMENT" json:"id"`
-	AbsoluteUrl string    `gorm:"column:absolute_url" json:"absolute_url"` // 完整链接
-	Status      int       `gorm:"column:status;default:0" json:"status"`   // 0-待爬取，1-已爬取
-	Title       string    `gorm:"column:title" json:"title"`
-	Description string    `gorm:"column:description" json:"description"`
-	CreatedAt   time.Time `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt   time.Time `gorm:"column:updated_at" json:"updated_at"`
+	ID          uint       `gorm:"column:id;primary_key;AUTO_INCREMENT" json:"id"`
+	AbsoluteUrl string     `gorm:"column:absolute_url" json:"absolute_url"` // 完整链接
+	Status      int        `gorm:"column:status;default:0" json:"status"`   // 0-待爬取，1-已爬取
+	Title       string     `gorm:"column:title" json:"title"`
+	Poster      string     `gorm:"column:poster" json:"poster"`
+	Description string     `gorm:"column:description" json:"description"`
+	CreatedAt   time.Time  `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt   time.Time  `gorm:"column:updated_at" json:"updated_at"`
+	Resources   []Resource `gorm:"foreignKey:PageID"`
 }
 
 func (m *Page) TableName() string {
