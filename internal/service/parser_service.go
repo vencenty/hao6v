@@ -4,27 +4,42 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"gorm.io/gorm"
 	"hao6v/internal/dao"
 	"hao6v/internal/model"
 	"sync"
 )
 
 type ParserService struct {
-	Dao      *gorm.DB
-	Jobs     chan *model.PageContent
+	Queue    model.Queue //队列
 	wg       sync.WaitGroup
-	Parallel int
+	Parallel int //并行处理的数量
+}
+
+type Parser interface {
+	Parse(page *model.PageContent) error
+}
+
+type ParserOption func(s *ParserService)
+
+func ParserParallelNum(num int) ParserOption {
+	return func(s *ParserService) {
+		s.Parallel = num
+	}
 }
 
 // NewParser 初始化一个Parser
-func NewParser(dao *gorm.DB) *ParserService {
-	return &ParserService{
-		Dao:      dao,
-		Jobs:     make(chan *model.PageContent, 10),
+func NewParser(q model.Queue, opts ...ParserOption) *ParserService {
+	s := &ParserService{
+		Queue:    q,
 		wg:       sync.WaitGroup{},
 		Parallel: 2,
 	}
+
+	for _, f := range opts {
+		f(s)
+	}
+
+	return s
 }
 
 // SetParallel 设置并行数量
@@ -51,12 +66,16 @@ func (p *ParserService) process(job *model.PageContent) {
 
 	byteReader := bytes.NewReader(job.HTML)
 	doc, err := goquery.NewDocumentFromReader(byteReader)
+	fmt.Println(doc.Find("title").Text())
+
+	return
+
 	if err != nil {
 		fmt.Println("当前job处理错误", job.URL)
 	}
 
 	r := doc.Find(`document.querySelector("#main > div.col6 > div > h1").innerText`).Text()
-	fmt.Println(r)
+	fmt.Println("r=", r, page.AbsoluteUrl)
 	return
 
 	// 写入数据
@@ -67,10 +86,11 @@ func (p *ParserService) fetchJob() {
 	defer p.wg.Done()
 	for {
 		select {
-		case v, ok := <-p.Jobs:
+		case v, ok := <-p.Queue:
 			if !ok {
 				break
 			}
+			fmt.Println("add to parser", v.URL)
 			p.process(v)
 		}
 	}

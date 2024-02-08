@@ -16,7 +16,7 @@ func main() {
 
 	// 初始化爬虫
 	scrape := spider.NewScrape(q)
-	scrape.Start("https://www.hao6v.tv/dy/")
+	scrape.Start("https://www.hao6v.tv/dy/2024-02-06/43744.html")
 
 	//// 初始化解析器
 	//parserService := service.NewParser(q)
